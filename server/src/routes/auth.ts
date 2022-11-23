@@ -4,13 +4,14 @@ import { body, validationResult } from "express-validator";
 import express from "express";
 import { login, register } from "../controllers/user";
 import { validate } from "../handlers/validation";
+import { verifyToken } from "../handlers/tokenHandler";
 const User = require("../models/user");
 const router = express.Router();
 
 //利用者新規登録API
 router.post(
   "/register",
-  body("username").isLength({ min: 8 }).withMessage("usernaem min 8 length"),
+  body("username").isLength({ min: 8 }).withMessage("username min 8 length"),
   body("password").isLength({ min: 8 }).withMessage("password min 8 length"),
   body("configrmPassword")
     .isLength({ min: 8 })
@@ -22,6 +23,7 @@ router.post(
       }
     });
   }),
+
   validate,
   register
 );
@@ -37,5 +39,10 @@ router.post(
   validate,
   login
 );
+
+//JWT認証
+router.post("/verify-token", verifyToken, (req, res) => {
+  return res.status(200).json({ user: req });
+});
 
 export default router;
