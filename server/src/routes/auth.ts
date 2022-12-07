@@ -13,13 +13,13 @@ router.post(
   "/register",
   body("username").isLength({ min: 8 }).withMessage("username min 8 length"),
   body("password").isLength({ min: 8 }).withMessage("password min 8 length"),
-  body("configrmPassword")
+  body("comfirmPassword")
     .isLength({ min: 8 })
-    .withMessage("configrmPassword min 8 length"),
+    .withMessage("comfirmPassword min 8 length"),
   body("username").custom((value) => {
     return User.findOne({ username: value }).then((user: any) => {
       if (user) {
-        return Promise.reject("invalid username");
+        return Promise.reject({ success: false, error: "invalid username" });
       }
     });
   }),
@@ -41,8 +41,8 @@ router.post(
 );
 
 //JWT認証
-router.post("/verify-token", verifyToken, (req, res) => {
-  return res.status(200).json({ user: req });
+router.post("/verify-token", verifyToken, (req:any, res) => {
+  return res.status(200).json({ success: true, data: { user: req.user } });
 });
 
 export default router;

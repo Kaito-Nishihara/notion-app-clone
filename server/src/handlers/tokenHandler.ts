@@ -1,8 +1,6 @@
 import CryptoJS from "crypto-js";
 import JWT from "jsonwebtoken";
 
-const key = process.env.SECRET_KEY as string;
-const tokenkry = process.env.TOKEN_KEY as string;
 const User = require("../models/user");
 
 export async function verifyToken(req: any, res: any, next: any) {
@@ -23,7 +21,6 @@ export async function verifyToken(req: any, res: any, next: any) {
 //JWT認証を検証するためのミドルウェア
 const tokenDecode = (req: any) => {
   const key = process.env.SECRET_KEY as string;
-  const tokenkry = process.env.TOKEN_KEY as string;
   const bearerHeader = req.headers["authorization"];
   if (bearerHeader) {
     const bearer = bearerHeader.split(" ")[1];

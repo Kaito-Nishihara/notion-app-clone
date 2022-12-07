@@ -1,11 +1,10 @@
 import axios, { ParamsSerializerOptions } from "axios";
 import qs from "qs";
+import ErrorResult from "../interface/ErrorResult";
 const BASE_URL = "http://localhost:5002/api/";
 
-const getToken = () => {
-  localStorage.getItem("token");
-};
-const axiosCilent = axios.create({
+const getToken = () => localStorage.getItem("token");;
+const axiosClient = axios.create({
   baseURL: BASE_URL,
   paramsSerializer: {
     encode: (params) => {
@@ -14,7 +13,7 @@ const axiosCilent = axios.create({
   },
 });
 
-axiosCilent.interceptors.request.use(async (config) => {
+axiosClient.interceptors.request.use(async (config) => {
   return {
     ...config,
     headers: {
@@ -24,17 +23,18 @@ axiosCilent.interceptors.request.use(async (config) => {
   };
 });
 
-axiosCilent.interceptors.response.use(
+axiosClient.interceptors.response.use(
   (response) => {
     if (response && response.data) return response.data;
     return response;
   },
   (err) => {
     if (!err.response) {
-      return alert(err);
+      //return alert(err);
     }
-    throw err.response;
+    const error = err.response as ErrorResult;
+    throw error;
   }
 );
 
-export default axiosCilent;
+export default axiosClient;

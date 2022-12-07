@@ -16,7 +16,9 @@ export async function register(req: Request, res: Response) {
     console.log(req.body);
     const user = await User.create(req.body);
     const token = JWT.sign({ id: user._id }, tokenkry, { expiresIn: "24h" });
-    return res.status(200).json({ user, token });
+    return res
+      .status(200)
+      .json({ success: true, data: { token: token, user: user } });
   } catch (err) {
     console.log(err);
     return res.status(500).json(err);
@@ -32,6 +34,7 @@ export async function login(req: Request, res: Response) {
     const user = await User.findOne({ username: username });
     if (!user) {
       return res.status(401).json({
+        success: false,
         error: {
           param: "username",
           message: "ユーザー名が無効です",
@@ -45,6 +48,7 @@ export async function login(req: Request, res: Response) {
     ).toString(CryptoJS.enc.Utf8);
     if (descryptedPassword != password) {
       return res.status(401).json({
+        success: false,
         error: {
           param: "password",
           message: "パスワード名が無効です",
@@ -53,9 +57,9 @@ export async function login(req: Request, res: Response) {
     }
     //JWT発行
     const token = JWT.sign({ id: user._id }, tokenkry, { expiresIn: "24h" });
-    return res.status(201).json({ user, token });
-  } catch (err) {
-    console.log(err);
-    return res.status(500).json(err);
+    return res.status(201).json({ success: true, data: { user, token } });
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({ success: false, error });
   }
 }
