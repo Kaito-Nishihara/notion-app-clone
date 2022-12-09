@@ -68,11 +68,12 @@ const Sidebar = () => {
     try {
       console.log("addmemo");
       const res = await memoApi.create();
-      console.log(res); //object
+      const memo = res.data as Memo;
+      console.log(memo); //object
       console.log(...memos); //配列の中身からobjectを取り出す
-      const newList = [res, ...memos];
+      const newList = [memo, ...memos];
       dispatch(setMemo(newList));
-      //navigate(`/memo/${res.id}`);
+      navigate(`/memo/${memo.id}`);
     } catch (err) {
       //alert(err);
     }
